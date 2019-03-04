@@ -245,6 +245,8 @@ namespace OxyPlot.WindowsForms
         /// <param name="updateData">if set to <c>true</c>, all data collections will be updated.</param>
         public void InvalidatePlot(bool updateData)
         {
+            IsRendering = true;
+
             lock (this.invalidateLock)
             {
                 this.isModelInvalidated = true;
@@ -349,6 +351,8 @@ namespace OxyPlot.WindowsForms
             }
         }
 
+        public bool IsRendering { get; private set; }
+
         /// <summary>
         /// Raises the <see cref="E:System.Windows.Forms.Control.MouseDown" /> event.
         /// </summary>
@@ -430,7 +434,7 @@ namespace OxyPlot.WindowsForms
                     {
                         if (this.model != null)
                         {
-                            ((IPlotModel)this.model).Update(this.updateDataFlag);
+                            ((IPlotModel) this.model).Update(this.updateDataFlag);
                             this.updateDataFlag = false;
                         }
 
@@ -452,7 +456,7 @@ namespace OxyPlot.WindowsForms
                             }
                         }
 
-                        ((IPlotModel)this.model).Render(this.renderContext, this.Width, this.Height);
+                        ((IPlotModel) this.model).Render(this.renderContext, this.Width, this.Height);
                     }
 
                     if (this.zoomRectangle != Rectangle.Empty)
@@ -460,7 +464,7 @@ namespace OxyPlot.WindowsForms
                         using (var zoomBrush = new SolidBrush(Color.FromArgb(0x40, 0xFF, 0xFF, 0x00)))
                         using (var zoomPen = new Pen(Color.Black))
                         {
-                            zoomPen.DashPattern = new float[] { 3, 1 };
+                            zoomPen.DashPattern = new float[] {3, 1};
                             e.Graphics.FillRectangle(zoomBrush, this.zoomRectangle);
                             e.Graphics.DrawRectangle(zoomPen, this.zoomRectangle);
                         }
@@ -476,8 +480,14 @@ namespace OxyPlot.WindowsForms
                 {
                     e.Graphics.ResetTransform();
                     e.Graphics.DrawString(
-                        "OxyPlot paint exception: " + paintException.Message, font, Brushes.Red, this.Width * 0.5f, this.Height * 0.5f, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                        "OxyPlot paint exception: " + paintException.Message, font, Brushes.Red, this.Width * 0.5f,
+                        this.Height * 0.5f,
+                        new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center});
                 }
+            }
+            finally
+            {
+                IsRendering = false;
             }
         }
 

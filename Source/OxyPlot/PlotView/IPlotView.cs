@@ -41,5 +41,10 @@ namespace OxyPlot
         /// </summary>
         /// <param name="text">The text.</param>
         void SetClipboardText(string text);
+
+        /// <summary>
+        /// Whether the control is currently rendering.
+        /// </summary>
+        bool IsRendering { get; }
     }
 }

@@ -361,6 +361,7 @@ namespace OxyPlot.Windows
         /// <param name="update">if set to <c>true</c>, the data collections will be updated.</param>
         public void InvalidatePlot(bool update = true)
         {
+            IsRendering = true;
             this.UpdateModel(update);
 
             if (DesignMode.DesignModeEnabled)
@@ -504,6 +505,8 @@ namespace OxyPlot.Windows
 
             // TODO: Clipboard.SetContent(pkg);
         }
+
+        public bool IsRendering { get; private set; }
 
         /// <summary>
         /// Invoked whenever application code or internal processes (such as a rebuilding layout pass) call ApplyTemplate. In simplest terms, this means the method is called just before a UI element displays in your app. Override this method to influence the default post-template logic of a class.
@@ -916,6 +919,8 @@ namespace OxyPlot.Windows
             {
                 ((IPlotModel)this.ActualModel).Render(this.renderContext, this.canvas.ActualWidth, this.canvas.ActualHeight);
             }
+
+            IsRendering = false;
         }
 
         /// <summary>

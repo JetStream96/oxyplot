@@ -239,6 +239,8 @@ namespace OxyPlot.Wpf
         /// <param name="updateData">The update Data.</param>
         public void InvalidatePlot(bool updateData = true)
         {
+            IsRendering = true;
+
             if (this.ActualWidth <= 0 || this.ActualHeight <= 0)
             {
                 return;
@@ -379,6 +381,8 @@ namespace OxyPlot.Wpf
         {
             Clipboard.SetText(text);
         }
+
+        public bool IsRendering { get; private set; }
 
         /// <summary>
         /// Provides the behavior for the Arrange pass of Silverlight layout. Classes can override this method to define their own Arrange pass behavior.
@@ -599,6 +603,8 @@ namespace OxyPlot.Wpf
                     ((IPlotModel)this.ActualModel).Render(this.renderContext, this.canvas.ActualWidth, this.canvas.ActualHeight);
                 }
             }
+
+            IsRendering = false;
         }
 
         /// <summary>
